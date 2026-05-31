@@ -11,12 +11,23 @@ jobs:
     name: Try to launch OCI A1 instance
     steps:
       - uses: actions/checkout@v3
+
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
+
+      - name: Write OCI private key
+        run: |
+          mkdir -p ~/.oci
+          echo "$OCI_KEY_CONTENT" > ~/.oci/oci_api_key.pem
+          chmod 600 ~/.oci/oci_api_key.pem
+        env:
+          OCI_KEY_CONTENT: ${{ secrets.OCI_PRIVATE_KEY_FILENAME }}
+
       - name: Run launch script
         run: php index.php
         env:
@@ -24,7 +35,7 @@ jobs:
           OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
           OCI_TENANCY_ID: ${{ secrets.OCI_TENANCY_ID }}
           OCI_KEY_FINGERPRINT: ${{ secrets.OCI_KEY_FINGERPRINT }}
-          OCI_PRIVATE_KEY_FILENAME: ${{ secrets.OCI_PRIVATE_KEY_FILENAME }}
+          OCI_PRIVATE_KEY_FILENAME: /home/runner/.oci/oci_api_key.pem
           OCI_AVAILABILITY_DOMAIN: ${{ secrets.OCI_AVAILABILITY_DOMAIN }}
           OCI_SUBNET_ID: ${{ secrets.OCI_SUBNET_ID }}
           OCI_IMAGE_ID: ${{ secrets.OCI_IMAGE_ID }}

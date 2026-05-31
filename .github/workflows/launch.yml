@@ -28,17 +28,6 @@ jobs:
         env:
           OCI_KEY_CONTENT: ${{ secrets.OCI_PRIVATE_KEY_FILENAME }}
 
-      - name: Verify private key
-        run: |
-          echo "=== 檔案是否存在 ==="
-          ls -la ~/.oci/oci_api_key.pem
-          echo "=== 私鑰第一行 ==="
-          head -1 ~/.oci/oci_api_key.pem
-          echo "=== 私鑰最後一行 ==="
-          tail -1 ~/.oci/oci_api_key.pem
-          echo "=== 總行數 ==="
-          wc -l ~/.oci/oci_api_key.pem
-
       - name: Run launch script
         run: php index.php
         env:
